@@ -1,6 +1,6 @@
-#TAREAS
-##se creara la base de datos tareas
-###para mysql
+# TAREAS
+## se creara la base de datos tareas
+### para mysql
 create database tareas;
 con la tabla
 create table tarea(
@@ -12,7 +12,7 @@ create table tarea(
    primary key(id)
 )engine=innobd;
 
-###para sqlite
+### para sqlite
 sqlite tareas.bd
 
 create table tarea(
