@@ -1,5 +1,3 @@
-target/
-libs/
-tareas.bd
-pom.xml
-
+tareas/dist/
+*.form
+*.class
