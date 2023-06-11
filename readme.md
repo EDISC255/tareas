@@ -15,7 +15,7 @@ create table tarea(
 
 ### para sqlite
 ´´´
-sqlite tareas.bd
+sqlite tareas.db
 ´´´
 ´´´sql
 create table tarea(
