@@ -1,8 +1,9 @@
 # TAREAS
 ## se creara la base de datos tareas
 ### para mysql
+´´´sql
 create database tareas;
-con la tabla
+-- con la tabla
 create table tarea(
    id int(8) auto_increment,
    titulo varchar(100),
@@ -13,8 +14,10 @@ create table tarea(
 )engine=innobd;
 
 ### para sqlite
+´´´
 sqlite tareas.bd
-
+´´´
+´´´sql
 create table tarea(
 	id integer primary key autoincrement,
 	titulo text,
@@ -22,3 +25,4 @@ create table tarea(
 	fecha text,
 	status integer
 )
+´´´
