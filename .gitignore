@@ -1,3 +1,4 @@
 tareas/dist/
 *.form
 *.class
+*.db
