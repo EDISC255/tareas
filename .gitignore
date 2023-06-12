@@ -1,4 +1,4 @@
 tareas/dist/
-*.form
+tareas/build/classes/
 *.class
 *.db
