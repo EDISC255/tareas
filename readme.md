@@ -3,7 +3,7 @@
 ### para mysql
 ```sql
 create database tareas;
- con la tabla
+ -- con la tabla
 create table tarea(
    id int(8) auto_increment,
    titulo varchar(100),
@@ -18,7 +18,7 @@ create table tarea(
 ```
 sqlite tareas.db
 ```
-``` sql
+```sql
 create table tarea(
 	id integer primary key autoincrement,
 	titulo text,

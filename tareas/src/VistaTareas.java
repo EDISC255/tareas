@@ -2,12 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
-import java.io.File;
 import javax.swing.DefaultListModel;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -24,14 +20,8 @@ public class VistaTareas extends javax.swing.JFrame {
      */
     public VistaTareas() {
         initComponents();
-        try {
-            File db=new File("tareas.db");
-            Class.forName("org.sqlite.JDBC");
-            co=DriverManager.getConnection("jdbc:sqlite:"+db.getAbsolutePath());
-            listarTareas();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        con=new Conexion();
+        listarTareas();
     }
 
     /**
@@ -71,6 +61,11 @@ public class VistaTareas extends javax.swing.JFrame {
         txtDescripcion.setRows(5);
         jScrollPane1.setViewportView(txtDescripcion);
 
+        lstTareas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstTareasMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(lstTareas);
 
         btnGuardar.setText("GUARDAR TAREA");
@@ -157,16 +152,14 @@ public class VistaTareas extends javax.swing.JFrame {
         String fecha=fecha(txtFecha.getDate().toString()),
                titulo=txtTitulo.getText(),
                descripcion=txtDescripcion.getText();
-        
         int status=0;
-        
-        try {    
-            PreparedStatement ps = co.prepareStatement(sentencia);
-            ps.setString(1,titulo);
-            ps.setString(2,descripcion);
-            ps.setString(3,fecha);
-            ps.setInt(4,status);
-            int i = ps.executeUpdate();
+        try {
+            con.setPs(con.getCo(),sentencia);
+            con.getPs().setString(1,titulo);
+            con.getPs().setString(2,descripcion);
+            con.getPs().setString(3,fecha);
+            con.getPs().setInt(4,status);
+            int i = con.getPs().executeUpdate();
             if (i!=0) {
                 javax.swing.JOptionPane.showInternalMessageDialog(null, "Tarea creada con exito");
                 listarTareas();
@@ -179,16 +172,22 @@ public class VistaTareas extends javax.swing.JFrame {
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
         filtrarPorFecha(txtFecha.getDate().toString());
     }//GEN-LAST:event_btnFiltrarActionPerformed
+
+    private void lstTareasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstTareasMouseClicked
+        if (evt.getClickCount()==2) {
+            String id = lstTareas.getSelectedValue().toString().split("--")[0];
+            DialogTarea dt=new DialogTarea(this, true, id);
+            dt.setVisible(true);
+        }
+    }//GEN-LAST:event_lstTareasMouseClicked
     private void listarTareas(){
         dlm = new DefaultListModel();
         lstTareas.setModel(dlm);
         sentencia="select id, titulo from tarea";
         try {
-            st=co.createStatement();
-            rs = st.executeQuery(sentencia);
-            while (rs.next()) {
-                dlm.addElement(rs.getString("id")+"--"+rs.getString("titulo"));
-                
+           con.setRS(con.getCo(), sentencia);
+            while (con.getRs().next()) {
+                dlm.addElement(con.getRs().getString("id")+"--"+con.getRs().getString("titulo"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,13 +197,10 @@ public class VistaTareas extends javax.swing.JFrame {
     private void filtrarPorFecha(String sFecha){
         dlm.clear();
         sentencia="select id, titulo from tarea where fecha = '"+ fecha(sFecha)+"'";
-        System.out.println(sentencia);
         try {
-            st=co.createStatement();
-            rs = st.executeQuery(sentencia);
+            con.setRS(con.getCo(), sentencia);
             while (rs.next()) {
-                dlm.addElement(rs.getString("id")+"--"+rs.getString("titulo"));
-                
+                dlm.addElement(con.getRs().getString("id")+"--"+con.getRs().getString("titulo"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,11 +209,10 @@ public class VistaTareas extends javax.swing.JFrame {
     public String fecha(Object fecha2){
         Date fecha = new Date(fecha2.toString());
         SimpleDateFormat sf= new SimpleDateFormat("dd-MM-yyyy");
-        //System.out.println(fecha);
         System.out.println(sf.format(fecha));   
         return sf.format(fecha);
     }
-    
+    private Conexion con;
     private String sentencia;
     private Connection co;
     private Statement st;
