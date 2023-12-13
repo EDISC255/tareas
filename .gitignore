@@ -1,5 +1,4 @@
 tareas/dist/
 tareas/build/classes/
-tareas/nbproject/
 *.class
 *.db
